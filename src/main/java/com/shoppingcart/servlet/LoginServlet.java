@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
 			String password = request.getParameter("login-password");
 			
 			try {
-				UserDao udao = new UserDao(DbCon.getConnecrion());
+				UserDao udao = new UserDao(DbCon.getConnection());
 				User user = udao.userLogin(email, password);
 				
 				if(user != null) {
