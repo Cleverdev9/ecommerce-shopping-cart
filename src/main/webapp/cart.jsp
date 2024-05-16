@@ -86,7 +86,7 @@ if(cart_list != null){
 			
 						</form>
 					</td>
-					<td><a class="btn btn-sm btn-danger" href="">Remove</a></td>
+					<td><a class="btn btn-sm btn-danger" href="remove-from-cart?id=<%= c.getId()%>">Remove</a></td>
 				</tr>
 				 <%}
 				
