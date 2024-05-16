@@ -5,9 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
-import com.shoppingcart.model.*;
-import java.sql.*;
+
+import com.shoppingcart.model.Cart;
 import com.shoppingcart.model.Product;
 
 
@@ -81,6 +80,27 @@ public class ProductDao {
 		}
 		
 		return products;
+	}
+	public double getTotalCartPrice(ArrayList<Cart> cartList) {
+		double sum = 0;
+		try{
+			if(cartList.size()>0) {
+				for(Cart item : cartList) {
+					query = "select price from products where id=?";
+					pst = this.con.prepareStatement(query);
+					pst.setInt(1, item.getId());
+					rs = pst.executeQuery();
+					
+					while(rs.next()) {
+						sum += rs.getDouble("price") * item.getQuantity();
+					}
+				}
+			}
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();		}
+		return sum;
 	}
 	
 	
