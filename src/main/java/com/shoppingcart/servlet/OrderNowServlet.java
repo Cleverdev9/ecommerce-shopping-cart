@@ -3,6 +3,7 @@ package com.shoppingcart.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.shoppingcart.connection.DbCon;
+import com.shoppingcart.dao.OrderDao;
+import com.shoppingcart.model.Cart;
 import com.shoppingcart.model.Order;
 import com.shoppingcart.model.User;
 
@@ -41,9 +45,32 @@ public class OrderNowServlet extends HttpServlet {
 				orderModel.setQuantity(productQuantity);
 				orderModel.setDate(formatter.format(date));
 				
+				OrderDao orderDao = new OrderDao(DbCon.getConnection());
+				boolean result = orderDao.insertOrder(orderModel);
+				
+				if(result) {
+					
+					ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
+	   				if(cart_list != null) {
+	   					for(Cart c : cart_list) {
+	   						if(c.getId() == Integer.parseInt(productId)) {
+	   							cart_list.remove(cart_list.indexOf(c));
+	   							break;
+	   						}
+	   					}
+	   					
+	   				}
+					response.sendRedirect("orders.jsp");
+				}else {
+					out.print("order dailed");
+					
+				}
+				
 			}else {
 				response.sendRedirect("login.jsp");
 			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 
